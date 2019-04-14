@@ -1,0 +1,21 @@
+---
+  - hosts: app-servers
+    become: yes
+    become_user: root
+    tasks:
+      - name: Add jdk 8 repository
+        apt_repository:
+          repo: ppa:webupd8team/java
+      - name: Accept oracle license
+        shell: /bin/echo debconf shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections
+        sudo: yes
+      - name: install java packages
+        apt:
+           name: {{item}}
+           state: present
+           update-cache: yes
+           force: yes
+        loop:
+           - oracle-java8-installer
+           - ca-certificates
+           - oracle-java8-set-default
