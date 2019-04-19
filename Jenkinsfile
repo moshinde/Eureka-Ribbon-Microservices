@@ -5,7 +5,7 @@ pipeline{
             steps{
                 echo 'clean directory'
                 echo 'Checking out the repository'
-                bat "git clone https://github.com/moshinde/Eureka-Ribbon-Microservices.git"
+                checkout scm
                 
             }
 
