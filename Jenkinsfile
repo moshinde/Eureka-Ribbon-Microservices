@@ -1,16 +1,6 @@
 pipeline{
     agent any
-    stages{
-        stage('Checkout the repo'){
-            steps{
-                echo 'clean directory'
-                echo 'Checking out the repository'
-                checkout scm
-                
-            }
-
-        }
-        
+    stages{        
         stage('Build Jars'){
             steps{
                 echo 'Building Eureka service'
