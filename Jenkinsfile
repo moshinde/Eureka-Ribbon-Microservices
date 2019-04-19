@@ -26,7 +26,12 @@ pipeline{
         
         stage('Deploy'){
             steps{
-                echo 'deploy'
+                echo 'Copy netflix-eureka-naming-server WAR file'
+                bat("xcopy .\\netflix-eureka-naming-server\\target\\*.war C:\\monica\\sharedVirtual")
+                echo 'Copy currency-exchange-service WAR file'
+                bat("xcopy .\\currency-exchange-service\\target\\*.war C:\\monica\\sharedVirtual")
+                echo 'Copy currency-conversion-service WAR file'
+                bat("xcopy .\\currency-conversion-service\\target\\*.war C:\\monica\\sharedVirtual")
             }
         }
     }
