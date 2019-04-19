@@ -3,12 +3,17 @@
     become: yes
     become_user: root
     tasks:
+      - name: check if jdk 8 installed
+        command: which java
+        register: check_java
       - name: Add jdk 8 repository
         apt_repository:
           repo: ppa:webupd8team/java
+        when: check_java.rc > 1
       - name: Accept oracle license
         shell: /bin/echo debconf shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections
         sudo: yes
+        when: check_java.rc > 1
       - name: install java packages
         apt:
            name: {{item}}
@@ -19,3 +24,4 @@
            - oracle-java8-installer
            - ca-certificates
            - oracle-java8-set-default
+        when: check_java.rc > 1
