@@ -1,0 +1,26 @@
+---
+  - hosts: app-servers
+    become: yes
+    become_user: root
+    tasks:
+      - name: create clean directories
+        file: 
+          path: "{{item}}"
+          state: directory
+          mode: 0777
+        loop:
+           - { '/var/opt/conversion/' }
+           - { '/var/opt/exchange/' }
+           - { '/var/opt/eureka/' }
+      - name: copy jar files to app-server
+        copy: src={{item.src}} dest={{item.dest}} mode=0777
+        loop:
+           - { src: './wars/currency-conversion-service-0.0.1-SNAPSHOT.war', dest: '/var/opt/conversion/'}
+           - { src: './wars/currency-exchange-service-0.0.1-SNAPSHOT.war', dest: '/var/opt/exchange/'}
+           - { src: './wars/netflix-eureka-naming-server-0.0.1-SNAPSHOT.war', dest: '/var/opt/eureka/' }
+      - name: Run jar files
+        shell: cd {{item.dir}} && nohup java -jar "{{item.file}}"
+        loop:
+           - { dir: '/var/opt/eureka/' , file: 'netflix-eureka-naming-server-0.0.1-SNAPSHOT.war' }
+           - { dir: '/var/opt/exchange/', file: 'currency-exchange-service-0.0.1-SNAPSHOT.war' }
+           - { dir: '/var/opt/conversion/', file: 'currency-conversion-service-0.0.1-SNAPSHOT.war' }

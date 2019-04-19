@@ -1,12 +1,12 @@
 ---
-  - hosts: app-servers
+  - hosts: all
     become: yes
     become_user: root
     tasks:
-      - name: check if jdk 8 installed
+      - name: check if java installed
         command: which java
         register: check_java
-      - name: Add jdk 8 repository
+      - name: Add jdk 1.8 repo
         apt_repository:
           repo: ppa:webupd8team/java
         when: check_java.rc > 1
@@ -14,12 +14,8 @@
         shell: /bin/echo debconf shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections
         sudo: yes
         when: check_java.rc > 1
-      - name: install java packages
-        apt:
-           name: {{item}}
-           state: present
-           update-cache: yes
-           force: yes
+      - name: install jdk 8
+        apt: name={{item}} state=present update-cache=yes force=yes
         loop:
            - oracle-java8-installer
            - ca-certificates
